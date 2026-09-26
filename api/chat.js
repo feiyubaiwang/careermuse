@@ -61,9 +61,19 @@ export default async function handler(req, res) {
       return res.status(429).json({ error: "今日消息已达上限", detail: "每位用户每天 10 条，明天 0 点重置", remaining: 0, limit: DAILY_LIMIT });
     }
 
+    const model = process.env.DEEPSEEK_MODEL || "deepseek-chat";
+
     if (mode === "all") {
-      const r = await client.responses.create({ model: process.env.DEEPSEEK_MODEL || "deepseek-chat", instructions: all(), input: `用户的职场问题：\n${String(message).slice(0, 5000)}` });
-      let raw = (r.output_text || "").replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
+      const r = await client.chat.completions.create({
+        model,
+        messages: [
+          { role: "system", content: all() },
+          { role: "user", content: `用户的职场问题：\n${String(message).slice(0, 5000)}` }
+        ],
+        temperature: 0.7,
+        response_format: { type: "json_object" }
+      });
+      let raw = ((r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "").replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
       let p;
       try { p = JSON.parse(raw); } catch { return res.status(502).json({ error: "AI returned invalid group response", detail: raw.slice(0, 1000) }); }
       return res.status(200).json({ answers: Array.isArray(p.answers) ? p.answers : [], remaining: rl.remaining, limit: DAILY_LIMIT });
@@ -72,8 +82,16 @@ export default async function handler(req, res) {
     const c = C[character] || C.miranda;
     const safe = Array.isArray(history) ? history.slice(-8) : [];
     const input = safe.map(m => `${m.role === "assistant" ? "顾问" : "用户"}：${String(m.content || "").slice(0, 3000)}`).join("\n\n");
-    const r = await client.responses.create({ model: process.env.DEEPSEEK_MODEL || "deepseek-chat", instructions: single(c), input });
-    return res.status(200).json({ answer: r.output_text || "", remaining: rl.remaining, limit: DAILY_LIMIT });
+    const r = await client.chat.completions.create({
+      model,
+      messages: [
+        { role: "system", content: single(c) },
+        { role: "user", content: input || `用户的职场问题：\n${String(message).slice(0, 5000)}` }
+      ],
+      temperature: 0.8
+    });
+    const answer = (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "";
+    return res.status(200).json({ answer, remaining: rl.remaining, limit: DAILY_LIMIT });
   } catch (e) {
     return res.status(500).json({
       error: "AI request failed",
