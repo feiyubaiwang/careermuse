@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career Muse · 电影里的职场女主，替你换一种思维</title>
+  <meta name="description" content="选择一位电影职场女性，用她的思维方式重新看待你的职场问题。">
+  <style>
+    :root{
+      --bg:#F0EEE9; --ink:#242320; --muted:#77736b; --line:#d8d4cc;
+      --card:#f7f5f1; --dark:#292824; --white:#fffdfa;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Microsoft YaHei",sans-serif}
+    button,textarea{font:inherit}
+    .wrap{max-width:1180px;margin:auto;padding:30px 28px 60px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:6px 0 54px}
+    .brand{font-family:Georgia,serif;font-size:20px;letter-spacing:.02em}
+    .nav{font-size:12px;color:var(--muted);letter-spacing:.08em}
+    .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:end;padding:30px 0 54px}
+    .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:22px}
+    h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(48px,6vw,78px);line-height:.98;letter-spacing:-.045em;margin:0}
+    .hero p{font-size:16px;line-height:1.9;color:#625f58;max-width:450px;margin:0 0 6px}
+    .rule{border-top:1px solid var(--line)}
+    .section-head{display:flex;justify-content:space-between;align-items:end;padding:28px 0 18px}
+    .section-title{font-family:Georgia,serif;font-size:22px}
+    .hint{font-size:12px;color:var(--muted)}
+    .characters{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .character{position:relative;text-align:left;border:1px solid var(--line);background:transparent;padding:20px 16px 18px;min-height:210px;cursor:pointer;transition:.2s ease}
+    .character:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
+    .character.active{background:var(--dark);color:var(--white);border-color:var(--dark)}
+    .number{font-size:10px;letter-spacing:.12em;color:var(--muted)}
+    .active .number{color:#aaa79f}
+    .avatar{width:54px;height:54px;border-radius:50%;background:#d5d1c9;margin:25px 0 18px;display:grid;place-items:center;font-family:Georgia,serif;font-size:20px}
+    .active .avatar{background:#545149}
+    .name{font-family:Georgia,serif;font-size:18px;margin-bottom:6px}
+    .role{font-size:11px;color:var(--muted);line-height:1.5}
+    .active .role{color:#bdb9b1}
+    .chat{margin-top:54px;border:1px solid var(--line);background:rgba(255,253,250,.55)}
+    .chat-top{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .selected{display:flex;align-items:center;gap:12px}
+    .dot{width:8px;height:8px;border-radius:50%;background:#4c5149}
+    .selected strong{font-family:Georgia,serif;font-size:18px;font-weight:400}
+    .selected span{font-size:11px;color:var(--muted);margin-left:7px}
+    .messages{min-height:310px;max-height:520px;overflow:auto;padding:30px 24px}
+    .empty{height:250px;display:grid;place-items:center;text-align:center;color:var(--muted);font-family:Georgia,serif;font-size:21px;line-height:1.55}
+    .msg{display:flex;margin:0 0 22px}
+    .msg.user{justify-content:flex-end}
+    .bubble{max-width:760px;padding:15px 18px;line-height:1.8;font-size:14px;white-space:pre-wrap}
+    .assistant .bubble{background:#e8e4dd}
+    .user .bubble{background:var(--dark);color:var(--white)}
+    .composer{border-top:1px solid var(--line);padding:16px;display:flex;gap:10px;align-items:flex-end}
+    textarea{flex:1;border:0;background:transparent;resize:none;outline:none;min-height:50px;max-height:140px;padding:10px 8px;line-height:1.6;color:var(--ink)}
+    textarea::placeholder{color:#9a968e}
+    .send{border:0;background:var(--dark);color:#fff;padding:12px 20px;cursor:pointer}
+    .send:disabled{opacity:.4;cursor:not-allowed}
+    .suggestions{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 16px}
+    .suggestion{border:1px solid var(--line);background:transparent;padding:8px 11px;font-size:11px;color:#69655e;cursor:pointer}
+    footer{padding-top:26px;color:#8b877f;font-size:10px;line-height:1.7}
+    @media(max-width:850px){
+      .hero{grid-template-columns:1fr;gap:30px}
+      .characters{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:520px){
+      .wrap{padding:22px 16px 40px}
+      header{padding-bottom:35px}
+      .hero{padding-top:10px}
+      .characters{grid-template-columns:1fr 1fr}
+      .character{min-height:180px}
+      .avatar{margin:18px 0 14px}
+      .chat{margin-top:35px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Career Muse</div>
+    <div class="nav">电影 × 职场 × AI</div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">A different way to think about work</div>
+      <h1>如果由她来<br>处理你的职场问题。</h1>
+    </div>
+    <p>选择一位电影里的职业女性。把你的真实困境交给她——不是模仿她说话，而是借用她看待权力、能力、关系与领导力的方式。</p>
+  </section>
+
+  <div class="rule"></div>
+  <section>
+    <div class="section-head">
+      <div class="section-title">Choose your muse</div>
+      <div class="hint">你也可以随时切换角色</div>
+    </div>
+    <div class="characters" id="characters"></div>
+  </section>
+
+  <section class="chat">
+    <div class="chat-top">
+      <div class="selected">
+        <div class="dot"></div>
+        <div><strong id="selectedName">Miranda</strong><span id="selectedRole">Power Strategist</span></div>
+      </div>
+      <div class="hint">AI Career Advisor</div>
+    </div>
+    <div class="messages" id="messages">
+      <div class="empty">Tell her what happened.<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>
+    </div>
+    <div class="suggestions" id="suggestions">
+      <button class="suggestion">老板总是抢我的功劳</button>
+      <button class="suggestion">我该不该接受这个晋升</button>
+      <button class="suggestion">我能力不错，但没人看见</button>
+      <button class="suggestion">怎么进入公司的核心项目</button>
+    </div>
+    <div class="composer">
+      <textarea id="input" placeholder="写下你的职场问题……" rows="1"></textarea>
+      <button class="send" id="send">Ask her</button>
+    </div>
+  </section>
+
+  <footer>
+    Career Muse 是一个实验性的 AI 职场思维工具。角色回答基于电影人物的公开叙事特征进行抽象，不代表电影角色本人，也不复现电影原台词。
+  </footer>
+</div>
+
+<script>
+const characters = [
+  {id:"miranda",name:"Miranda",cn:"米兰达",role:"Power Strategist",film:"The Devil Wears Prada",tag:"POWER",initial:"M"},
+  {id:"elle",name:"Elle",cn:"艾丽",role:"Confidence Challenger",film:"Legally Blonde",tag:"CONFIDENCE",initial:"E"},
+  {id:"jules",name:"Jules",cn:"朱尔斯",role:"Organization Builder",film:"The Intern",tag:"LEADERSHIP",initial:"J"},
+  {id:"molly",name:"Molly",cn:"茉莉",role:"Network Architect",film:"Molly's Game",tag:"NETWORK",initial:"M"},
+  {id:"katherine",name:"Katherine",cn:"凯瑟琳",role:"Quiet Expert",film:"Hidden Figures",tag:"EXPERTISE",initial:"K"}
+];
+
+let selected = characters[0];
+let history = [];
+
+const charBox = document.getElementById("characters");
+const messages = document.getElementById("messages");
+const input = document.getElementById("input");
+const send = document.getElementById("send");
+
+function renderCharacters(){
+  charBox.innerHTML = characters.map((c,i)=>`
+    <button class="character ${c.id===selected.id?'active':''}" data-id="${c.id}">
+      <div class="number">0${i+1} / ${c.tag}</div>
+      <div class="avatar">${c.initial}</div>
+      <div class="name">${c.name} <span style="font-size:12px">${c.cn}</span></div>
+      <div class="role">${c.role}<br>${c.film}</div>
+    </button>`).join("");
+  document.querySelectorAll(".character").forEach(el=>{
+    el.onclick=()=>{selected=characters.find(c=>c.id===el.dataset.id); history=[]; clearChat(); updateSelected(); renderCharacters();}
+  });
+}
+function updateSelected(){
+  document.getElementById("selectedName").textContent=selected.name;
+  document.getElementById("selectedRole").textContent=selected.role;
+}
+function clearChat(){
+  messages.innerHTML='<div class="empty">Tell her what happened.<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>';
+}
+function addMessage(role,text){
+  const empty=messages.querySelector(".empty"); if(empty) empty.remove();
+  const el=document.createElement("div"); el.className="msg "+role;
+  const b=document.createElement("div"); b.className="bubble"; b.textContent=text;
+  el.appendChild(b); messages.appendChild(el); messages.scrollTop=messages.scrollHeight;
+}
+async function ask(){
+  const text=input.value.trim(); if(!text || send.disabled) return;
+  addMessage("user",text); history.push({role:"user",content:text});
+  input.value=""; input.style.height="auto"; send.disabled=true; send.textContent="Thinking…";
+  try{
+    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({character:selected.id,message:text,history:history.slice(-8)})});
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||"Request failed");
+    addMessage("assistant",data.answer); history.push({role:"assistant",content:data.answer});
+  }catch(e){
+    addMessage("assistant","暂时无法连接 AI。请检查 API 部署和环境变量配置。\n\n"+e.message);
+  }finally{send.disabled=false;send.textContent="Ask her";}
+}
+send.onclick=ask;
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask()}});
+input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,140)+"px"});
+document.querySelectorAll(".suggestion").forEach(b=>b.onclick=()=>{input.value=b.textContent;input.focus()});
+renderCharacters(); updateSelected();
+</script>
+</body>
+</html>
