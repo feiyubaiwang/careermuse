@@ -47,7 +47,6 @@ async function checkRateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("x-upstash", `${!!process.env.UPSTASH_REDIS_REST_URL}-${!!process.env.UPSTASH_REDIS_REST_TOKEN}`);
   if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
   if (!process.env.DEEPSEEK_API_KEY) return res.status(500).json({ error: "Missing DEEPSEEK_API_KEY" });
 
