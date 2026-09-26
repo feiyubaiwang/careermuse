@@ -53,6 +53,7 @@ export default async function handler(req, res) {
 
   try {
     const { mode = "single", character, message, history = [] } = req.body || {};
+    return res.status(200).json({ step: "body_ok", mode, hasMessage: !!message, bodyType: typeof req.body });
     if (!message) return res.status(400).json({ error: "Message is required" });
 
     // 每日限额校验
