@@ -48,12 +48,17 @@ async function checkRateLimit(ip) {
   const key = `ratelimit:${ip}:${today}`;
   const auth = { Authorization: `Bearer ${token}` };
 
-  const incrRes = await fetch(`${url}/incr/${encodeURIComponent(key)}`, { headers: auth }).then(r => r.json()).catch(() => null);
+  const incrResp = await fetch(`${url}/incr/${encodeURIComponent(key)}`, { headers: auth }).catch(err => ({ __err: String(err) }));
+  let incrText = "";
+  let incrStatus = incrResp && incrResp.status;
+  try { incrText = await incrResp.text(); } catch {}
+  let incrRes = null;
+  try { incrRes = JSON.parse(incrText); } catch {}
   const count = incrRes && typeof incrRes.result === "number" ? incrRes.result : 1;
   if (count === 1) {
     fetch(`${url}/expire/${encodeURIComponent(key)}/172800`, { headers: auth }).catch(() => {}); // 2 天后自动清理
   }
-  return { allowed: count <= DAILY_LIMIT, remaining: Math.max(0, DAILY_LIMIT - count), used: count };
+  return { allowed: count <= DAILY_LIMIT, remaining: Math.max(0, DAILY_LIMIT - count), used: count, _dbg: { urlHost: url.replace(/^https?:\/\//, "").split("/")[0], tokLen: token.length, incrStatus, incrBody: incrText.slice(0, 300) } };
 }
 
 export default async function handler(req, res) {
@@ -101,7 +106,7 @@ export default async function handler(req, res) {
       temperature: 0.8
     });
     const answer = (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "";
-    return res.status(200).json({ answer, remaining: rl.remaining, limit: DAILY_LIMIT });
+    return res.status(200).json({ answer, remaining: rl.remaining, limit: DAILY_LIMIT, _dbg: rl._dbg });
   } catch (e) {
     return res.status(500).json({ error: "AI request failed", detail: e && e.message ? e.message : "Unknown error" });
   }
