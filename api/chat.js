@@ -47,13 +47,11 @@ async function checkRateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("x-build", "48c6138-early");
-  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed", build: "ba543cb-rawfetch" });
+  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
   if (!process.env.DEEPSEEK_API_KEY) return res.status(500).json({ error: "Missing DEEPSEEK_API_KEY" });
 
   try {
     const { mode = "single", character, message, history = [] } = req.body || {};
-    return res.status(200).json({ step: "body_ok", mode, hasMessage: !!message, bodyType: typeof req.body });
     if (!message) return res.status(400).json({ error: "Message is required" });
 
     // 每日限额校验
@@ -75,7 +73,7 @@ export default async function handler(req, res) {
         temperature: 0.7,
         response_format: { type: "json_object" }
       });
-      let raw = ((r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "").replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
+      const raw = ((r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "").replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
       let p;
       try { p = JSON.parse(raw); } catch { return res.status(502).json({ error: "AI returned invalid group response", detail: raw.slice(0, 1000) }); }
       return res.status(200).json({ answers: Array.isArray(p.answers) ? p.answers : [], remaining: rl.remaining, limit: DAILY_LIMIT });
@@ -84,29 +82,17 @@ export default async function handler(req, res) {
     const c = C[character] || C.miranda;
     const safe = Array.isArray(history) ? history.slice(-8) : [];
     const input = safe.map(m => `${m.role === "assistant" ? "顾问" : "用户"}：${String(m.content || "").slice(0, 3000)}`).join("\n\n");
-
-    // 诊断：直接 fetch DeepSeek，返回原始状态与响应体片段
-    const dres = await fetch("https://api.deepseek.com/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}` },
-      body: JSON.stringify({
-        model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
-        messages: [
-          { role: "system", content: single(c) },
-          { role: "user", content: input || `用户的职场问题：\n${String(message).slice(0, 5000)}` }
-        ],
-        temperature: 0.8
-      })
+    const r = await client.chat.completions.create({
+      model,
+      messages: [
+        { role: "system", content: single(c) },
+        { role: "user", content: input || `用户的职场问题：\n${String(message).slice(0, 5000)}` }
+      ],
+      temperature: 0.8
     });
-    const dtext = await dres.text();
-    return res.status(200).json({ diag_status: dres.status, diag_ct: dres.headers.get("content-type"), diag_body: dtext.slice(0, 800) });
+    const answer = (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "";
+    return res.status(200).json({ answer, remaining: rl.remaining, limit: DAILY_LIMIT });
   } catch (e) {
-    return res.status(500).json({
-      error: "AI request failed",
-      detail: e && e.message ? e.message : "Unknown error",
-      status: e && e.status,
-      code: e && e.code,
-      name: e && e.constructor ? e.constructor.name : null
-    });
+    return res.status(500).json({ error: "AI request failed", detail: e && e.message ? e.message : "Unknown error" });
   }
 }
