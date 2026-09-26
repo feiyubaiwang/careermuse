@@ -66,6 +66,7 @@
     .suggestions{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 16px}
     .suggestion{border:1px solid var(--line);background:transparent;padding:8px 11px;font-size:11px;color:#69655e;cursor:pointer;transition:.2s ease;border-radius:2px}
     .suggestion:hover{border-color:var(--wine);color:var(--wine)}
+    .view{display:none}.view.active{display:block}.entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}.entry-card{width:100%;border:1px solid var(--line);background:var(--card);padding:34px 32px 30px;text-align:left;cursor:pointer;transition:.22s ease;min-height:255px;display:flex;flex-direction:column;justify-content:space-between;color:var(--ink)}.entry-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(36,35,32,.12);border-color:var(--wine)}.entry-kicker{font-size:10px;letter-spacing:.16em;color:var(--wine);margin-bottom:18px}.entry-title{font-family:Georgia,serif;font-size:31px;font-weight:400;letter-spacing:-.025em;margin-bottom:12px}.entry-desc{font-size:13px;color:#625f58;line-height:1.85;max-width:400px}.entry-arrow{font-family:Georgia,serif;font-size:22px;color:var(--wine);align-self:flex-end}.back-row{display:flex;justify-content:space-between;align-items:center;padding:27px 0 18px}.back-btn{border:0;background:transparent;color:var(--wine);font-size:12px;cursor:pointer;padding:0}.view-label{font-size:11px;letter-spacing:.12em;color:var(--muted)}.group-header{border-bottom:1px solid var(--line);padding:24px}.group-title{font-family:Georgia,serif;font-size:24px;margin-bottom:6px}.group-desc{font-size:12px;color:var(--muted);line-height:1.7}.group-msg{display:grid;grid-template-columns:40px 1fr;gap:12px;margin:0 0 24px}.group-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid var(--wine-deep)}.group-name{font-family:Georgia,serif;font-size:16px;margin-bottom:5px}.group-role{font:11px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Microsoft YaHei",sans-serif;color:var(--muted);margin-left:7px}.group-bubble{background:#e8e4dd;padding:15px 18px;line-height:1.8;font-size:14px;white-space:pre-wrap}@media(max-width:700px){.entry-grid{grid-template-columns:1fr}.entry-card{min-height:215px;padding:28px 24px}.entry-title{font-size:28px}}
     footer{padding-top:26px;color:#8b877f;font-size:10px;line-height:1.7}
     @media(max-width:850px){
       .hero{grid-template-columns:1fr;gap:30px}
@@ -96,103 +97,29 @@
   </section>
 
   <div class="rule"></div>
-  <section>
-    <div class="section-head">
-      <div class="section-title">选择你的女主</div>
-      <div class="hint">你也可以随时切换角色</div>
-    </div>
-    <div class="characters" id="characters"></div>
-  </section>
-
-  <section class="chat">
-    <div class="chat-top">
-      <div class="selected">
-        <img class="selected-img" id="selectedImg" src="miranda.png" alt="Miranda">
-        <div><strong id="selectedName">Miranda 米兰达</strong><span id="selectedRole">权力谋略家</span></div>
-      </div>
-    </div>
-    <div class="messages" id="messages">
-      <div class="empty">把你的困境告诉她。<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>
-    </div>
-    <div class="suggestions" id="suggestions">
-      <button class="suggestion">我能力不错，但没人看见</button>
-      <button class="suggestion">怎么进入公司的核心项目</button>
-    </div>
-    <div class="composer">
-      <textarea id="input" placeholder="写下你的职场问题……" rows="1"></textarea>
-      <button class="send" id="send">问她</button>
-    </div>
-  </section>
-
+  <section id="homeView" class="view active"><div class="section-head"><div class="section-title">你想怎么聊？</div><div class="hint">选择一种职场思维场景</div></div><div class="entry-grid"><button class="entry-card" id="enterSingle"><div><div class="entry-kicker">01 / ONE-ON-ONE</div><div class="entry-title">一对一聊天</div><div class="entry-desc">选择一位电影里的职业女性，把你的真实困境交给她。她会用她的思维方式，单独和你讨论。</div></div><div class="entry-arrow">→</div></button><button class="entry-card" id="enterAll"><div><div class="entry-kicker">02 / GROUP CHAT</div><div class="entry-title">多人聊天室</div><div class="entry-desc">把同一个问题交给五位职业女性。五种思维同时加入讨论，从不同角度看同一件事。</div></div><div class="entry-arrow">→</div></button></div></section>
+  <section id="singleSelectView" class="view"><div class="back-row"><button class="back-btn" id="backFromSingle">← 返回</button><div class="view-label">一对一聊天 / 选择你的女主</div></div><div class="section-head"><div class="section-title">选择你的女主</div><div class="hint">她会用自己的思维方式看你的问题</div></div><div class="characters" id="characters"></div></section>
+  <section id="singleChatView" class="view"><div class="back-row"><button class="back-btn" id="backToCharacters">← 选择另一位</button><div class="view-label">一对一聊天</div></div><section class="chat"><div class="chat-top"><div class="selected"><img class="selected-img" id="selectedImg" src="miranda.png" alt="Miranda"><div><strong id="selectedName">Miranda 米兰达</strong><span id="selectedRole">权力谋略家</span></div></div></div><div class="messages" id="singleMessages"><div class="empty">把你的困境告诉她。<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div></div><div class="suggestions"><button class="suggestion">我能力不错，但没人看见</button><button class="suggestion">怎么进入公司的核心项目</button></div><div class="composer"><textarea id="singleInput" placeholder="写下你的职场问题……" rows="1"></textarea><button class="send" id="singleSend">问她</button></div></section></section>
+  <section id="allChatView" class="view"><div class="back-row"><button class="back-btn" id="backFromAll">← 返回</button><div class="view-label">多人聊天室</div></div><section class="chat"><div class="group-header"><div class="group-title">Career Muse · All 5</div><div class="group-desc">五位职业女性，五种思维。把一个问题交给她们，让她们分别发表意见。</div></div><div class="messages" id="allMessages"><div class="empty">欢迎来到多人聊天室。<br><span style="font-size:14px">把一个值得讨论的职场问题交给她们。</span></div></div><div class="suggestions"><button class="suggestion all-suggestion">老板把重要项目交给了别人，我该怎么办？</button><button class="suggestion all-suggestion">我想升职，但不知道怎么让老板看见我</button></div><div class="composer"><textarea id="allInput" placeholder="写下一个职场问题……" rows="1"></textarea><button class="send" id="allSend">问她们</button></div></section></section>
   <footer>
     Career Muse 是一个实验性的 AI 职场思维工具。角色回答基于电影人物的公开叙事特征进行抽象，不代表电影角色本人，也不复现电影原台词。
   </footer>
 </div>
 
 <script>
-const characters = [
-  {id:"miranda",name:"Miranda",cn:"米兰达",role:"权力谋略家",film:"《穿普拉达的女王》",tag:"权力",img:"miranda.png"},
-  {id:"elle",name:"Elle",cn:"艾丽",role:"自信挑战者",film:"《律政俏佳人》",tag:"自信",img:"elle.png"},
-  {id:"jules",name:"Jules",cn:"朱尔斯",role:"组织构建者",film:"《实习生》",tag:"管理",img:"jules.png"},
-  {id:"molly",name:"Molly",cn:"茉莉",role:"人脉架构师",film:"《茉莉牌局》",tag:"人脉",img:"MOLLY.png"},
-  {id:"katherine",name:"Katherine",cn:"凯瑟琳",role:"安静的专家",film:"《隐藏人物》",tag:"专业",img:"katherine.png"}
-];
-
-let selected = characters[0];
-let history = [];
-
-const charBox = document.getElementById("characters");
-const messages = document.getElementById("messages");
-const input = document.getElementById("input");
-const send = document.getElementById("send");
-
-function renderCharacters(){
-  charBox.innerHTML = characters.map((c,i)=>`
-    <button class="character ${c.id===selected.id?'active':''}" data-id="${c.id}">
-      <img class="char-img" src="${c.img}" alt="${c.name} ${c.cn}" loading="lazy">
-      <div class="char-body">
-        <div class="number">0${i+1} / ${c.tag}</div>
-        <div class="name">${c.name}<span>${c.cn}</span></div>
-        <div class="role">${c.role}<br>${c.film}</div>
-      </div>
-    </button>`).join("");
-  document.querySelectorAll(".character").forEach(el=>{
-    el.onclick=()=>{selected=characters.find(c=>c.id===el.dataset.id); history=[]; clearChat(); updateSelected(); renderCharacters();}
-  });
-}
-function updateSelected(){
-  document.getElementById("selectedName").textContent=selected.name+" "+selected.cn;
-  document.getElementById("selectedRole").textContent=selected.role;
-  const img=document.getElementById("selectedImg"); img.src=selected.img; img.alt=selected.name+" "+selected.cn;
-}
-function clearChat(){
-  messages.innerHTML='<div class="empty">把你的困境告诉她。<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>';
-}
-function addMessage(role,text){
-  const empty=messages.querySelector(".empty"); if(empty) empty.remove();
-  const el=document.createElement("div"); el.className="msg "+role;
-  const b=document.createElement("div"); b.className="bubble"; b.textContent=text;
-  el.appendChild(b); messages.appendChild(el); messages.scrollTop=messages.scrollHeight;
-}
-async function ask(){
-  const text=input.value.trim(); if(!text || send.disabled) return;
-  addMessage("user",text); history.push({role:"user",content:text});
-  input.value=""; input.style.height="auto"; send.disabled=true; send.textContent="思考中…";
-  try{
-    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({character:selected.id,message:text,history:history.slice(-8)})});
-    const data=await res.json();
-    if(!res.ok) throw new Error((data.error||"Request failed")+(data.detail?(" · "+data.detail):""));
-    addMessage("assistant",data.answer); history.push({role:"assistant",content:data.answer});
-  }catch(e){
-    addMessage("assistant","暂时无法连接 AI。请检查 API 部署和环境变量配置。\n\n"+e.message);
-  }finally{send.disabled=false;send.textContent="问她";}
-}
-send.onclick=ask;
-input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask()}});
-input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,140)+"px"});
-document.querySelectorAll(".suggestion").forEach(b=>b.onclick=()=>{input.value=b.textContent;input.focus()});
-renderCharacters(); updateSelected();
+const characters=[{id:"miranda",name:"Miranda",cn:"米兰达",role:"权力谋略家",film:"《穿普拉达的女王》",tag:"权力",img:"miranda.png"},{id:"elle",name:"Elle",cn:"艾丽",role:"自信挑战者",film:"《律政俏佳人》",tag:"自信",img:"elle.png"},{id:"jules",name:"Jules",cn:"朱尔斯",role:"组织构建者",film:"《实习生》",tag:"管理",img:"jules.png"},{id:"molly",name:"Molly",cn:"茉莉",role:"人脉架构师",film:"《茉莉牌局》",tag:"人脉",img:"MOLLY.png"},{id:"katherine",name:"Katherine",cn:"凯瑟琳",role:"安静的专家",film:"《隐藏人物》",tag:"专业",img:"katherine.png"}];
+let selected=characters[0],history=[];
+const homeView=document.getElementById("homeView"),singleSelectView=document.getElementById("singleSelectView"),singleChatView=document.getElementById("singleChatView"),allChatView=document.getElementById("allChatView"),charBox=document.getElementById("characters"),singleMessages=document.getElementById("singleMessages"),singleInput=document.getElementById("singleInput"),singleSend=document.getElementById("singleSend"),allMessages=document.getElementById("allMessages"),allInput=document.getElementById("allInput"),allSend=document.getElementById("allSend");
+function show(v){[homeView,singleSelectView,singleChatView,allChatView].forEach(x=>x.classList.remove("active"));v.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});}
+function renderCharacters(){charBox.innerHTML=characters.map((c,i)=>`<button class="character" data-id="${c.id}"><img class="char-img" src="${c.img}" alt="${c.name} ${c.cn}" loading="lazy"><div class="char-body"><div class="number">0${i+1} / ${c.tag}</div><div class="name">${c.name}<span>${c.cn}</span></div><div class="role">${c.role}<br>${c.film}</div></div></button>`).join("");document.querySelectorAll(".character").forEach(el=>el.onclick=()=>{selected=characters.find(c=>c.id===el.dataset.id);history=[];updateSelected();clearSingle();show(singleChatView);});}
+function updateSelected(){document.getElementById("selectedName").textContent=selected.name+" "+selected.cn;document.getElementById("selectedRole").textContent=selected.role;document.getElementById("selectedImg").src=selected.img;}
+function clearSingle(){singleMessages.innerHTML='<div class="empty">把你的困境告诉她。<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>';}
+function clearAll(){allMessages.innerHTML='<div class="empty">欢迎来到多人聊天室。<br><span style="font-size:14px">把一个值得讨论的职场问题交给她们。</span></div>';}
+function addMessage(box,role,text){const e=box.querySelector(".empty");if(e)e.remove();const el=document.createElement("div");el.className="msg "+role;const b=document.createElement("div");b.className="bubble";b.textContent=text;el.appendChild(b);box.appendChild(el);box.scrollTop=box.scrollHeight;}
+function addGroup(answers){const e=allMessages.querySelector(".empty");if(e)e.remove();answers.forEach(a=>{const c=characters.find(x=>x.id===a.id);if(!c)return;const w=document.createElement("div");w.className="group-msg";w.innerHTML=`<img class="group-avatar" src="${c.img}" alt="${c.name}"><div><div class="group-name">${c.name} ${c.cn}<span class="group-role">${c.role}</span></div><div class="group-bubble"></div></div>`;w.querySelector(".group-bubble").textContent=a.answer||"暂时没有回答。";allMessages.appendChild(w);});allMessages.scrollTop=allMessages.scrollHeight;}
+async function askSingle(){const text=singleInput.value.trim();if(!text||singleSend.disabled)return;addMessage(singleMessages,"user",text);singleInput.value="";singleInput.style.height="auto";singleSend.disabled=true;singleSend.textContent="思考中…";try{const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"single",character:selected.id,message:text,history:[...history,{role:"user",content:text}].slice(-8)})});const data=await res.json();if(!res.ok)throw new Error((data.error||"Request failed")+(data.detail?" · "+data.detail:""));addMessage(singleMessages,"assistant",data.answer);history.push({role:"user",content:text},{role:"assistant",content:data.answer});}catch(e){addMessage(singleMessages,"assistant","暂时无法连接 AI。请检查 API 部署和环境变量配置。\n\n"+e.message);}finally{singleSend.disabled=false;singleSend.textContent="问她";}}
+async function askAll(){const text=allInput.value.trim();if(!text||allSend.disabled)return;addMessage(allMessages,"user",text);allInput.value="";allInput.style.height="auto";allSend.disabled=true;allSend.textContent="她们正在讨论…";try{const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:"all",message:text})});const data=await res.json();if(!res.ok)throw new Error((data.error||"Request failed")+(data.detail?" · "+data.detail:""));addGroup(data.answers||[]);}catch(e){addMessage(allMessages,"assistant","暂时无法连接 AI。请检查 API 部署和环境变量配置。\n\n"+e.message);}finally{allSend.disabled=false;allSend.textContent="问她们";}}
+document.getElementById("enterSingle").onclick=()=>{renderCharacters();show(singleSelectView);};document.getElementById("enterAll").onclick=()=>{clearAll();show(allChatView);};document.getElementById("backFromSingle").onclick=()=>show(homeView);document.getElementById("backToCharacters").onclick=()=>show(singleSelectView);document.getElementById("backFromAll").onclick=()=>show(homeView);singleSend.onclick=askSingle;allSend.onclick=askAll;singleInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askSingle();}});allInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askAll();}});[singleInput,allInput].forEach(i=>i.addEventListener("input",()=>{i.style.height="auto";i.style.height=Math.min(i.scrollHeight,140)+"px";}));document.querySelectorAll(".suggestion").forEach(b=>b.onclick=()=>{const target=b.classList.contains("all-suggestion")?allInput:singleInput;target.value=b.textContent;target.focus();});
 </script>
 </body>
 </html>
