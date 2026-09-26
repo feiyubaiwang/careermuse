@@ -25,20 +25,26 @@
     .section-head{display:flex;justify-content:space-between;align-items:end;padding:28px 0 18px}
     .section-title{font-family:Georgia,serif;font-size:22px}
     .hint{font-size:12px;color:var(--muted)}
-    .characters{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-    .character{position:relative;text-align:left;border:1px solid var(--line);background:transparent;padding:20px 16px 18px;min-height:210px;cursor:pointer;transition:.2s ease}
-    .character:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
-    .character.active{background:var(--dark);color:var(--white);border-color:var(--dark)}
-    .number{font-size:10px;letter-spacing:.12em;color:var(--muted)}
+    .characters{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .character{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:.2s ease;overflow:hidden;border-radius:2px;padding:0}
+    .character:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(36,35,32,.14)}
+    .character.active{border-color:var(--dark)}
+    .char-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;filter:grayscale(100%) contrast(1.03);transition:filter .25s ease}
+    .character.active .char-img,.character:hover .char-img{filter:none}
+    .char-body{padding:13px 14px 16px}
+    .character.active .char-body{background:var(--dark)}
+    .number{font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:8px}
     .active .number{color:#aaa79f}
-    .avatar{width:54px;height:54px;border-radius:50%;background:#d5d1c9;margin:25px 0 18px;display:grid;place-items:center;font-family:Georgia,serif;font-size:20px}
-    .active .avatar{background:#545149}
-    .name{font-family:Georgia,serif;font-size:18px;margin-bottom:6px}
-    .role{font-size:11px;color:var(--muted);line-height:1.5}
+    .name{font-family:Georgia,serif;font-size:17px;margin-bottom:6px}
+    .name span{font-size:12px;color:var(--muted);margin-left:4px}
+    .active .name{color:var(--white)}
+    .active .name span{color:#bdb9b1}
+    .role{font-size:11px;color:var(--muted);line-height:1.6}
     .active .role{color:#bdb9b1}
     .chat{margin-top:54px;border:1px solid var(--line);background:rgba(255,253,250,.55)}
     .chat-top{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
     .selected{display:flex;align-items:center;gap:12px}
+    .selected-img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
     .dot{width:8px;height:8px;border-radius:50%;background:#4c5149}
     .selected strong{font-family:Georgia,serif;font-size:18px;font-weight:400}
     .selected span{font-size:11px;color:var(--muted);margin-left:7px}
@@ -66,8 +72,6 @@
       header{padding-bottom:35px}
       .hero{padding-top:10px}
       .characters{grid-template-columns:1fr 1fr}
-      .character{min-height:180px}
-      .avatar{margin:18px 0 14px}
       .chat{margin-top:35px}
     }
   </style>
@@ -81,16 +85,16 @@
 
   <section class="hero">
     <div>
-      <div class="eyebrow">A different way to think about work</div>
+      <div class="eyebrow">换一种方式，重新看待职场</div>
       <h1>如果由她来<br>处理你的职场问题。</h1>
     </div>
-    <p>选择一位电影里的职业女性。把你的真实困境交给她——不是模仿她说话，而是借用她看待权力、能力、关系与领导力的方式。</p>
+    <p>选择一位电影里的职业女性，把你的真实困境交给她。她会用她的方式给到你答案。</p>
   </section>
 
   <div class="rule"></div>
   <section>
     <div class="section-head">
-      <div class="section-title">Choose your muse</div>
+      <div class="section-title">选择你的女主</div>
       <div class="hint">你也可以随时切换角色</div>
     </div>
     <div class="characters" id="characters"></div>
@@ -99,13 +103,13 @@
   <section class="chat">
     <div class="chat-top">
       <div class="selected">
-        <div class="dot"></div>
-        <div><strong id="selectedName">Miranda</strong><span id="selectedRole">Power Strategist</span></div>
+        <img class="selected-img" id="selectedImg" src="miranda.png" alt="Miranda">
+        <div><strong id="selectedName">Miranda 米兰达</strong><span id="selectedRole">权力谋略家</span></div>
       </div>
-      <div class="hint">AI Career Advisor</div>
+      <div class="hint">AI 职场顾问</div>
     </div>
     <div class="messages" id="messages">
-      <div class="empty">Tell her what happened.<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>
+      <div class="empty">把你的困境告诉她。<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>
     </div>
     <div class="suggestions" id="suggestions">
       <button class="suggestion">老板总是抢我的功劳</button>
@@ -115,7 +119,7 @@
     </div>
     <div class="composer">
       <textarea id="input" placeholder="写下你的职场问题……" rows="1"></textarea>
-      <button class="send" id="send">Ask her</button>
+      <button class="send" id="send">问她</button>
     </div>
   </section>
 
@@ -126,11 +130,11 @@
 
 <script>
 const characters = [
-  {id:"miranda",name:"Miranda",cn:"米兰达",role:"Power Strategist",film:"The Devil Wears Prada",tag:"POWER",initial:"M"},
-  {id:"elle",name:"Elle",cn:"艾丽",role:"Confidence Challenger",film:"Legally Blonde",tag:"CONFIDENCE",initial:"E"},
-  {id:"jules",name:"Jules",cn:"朱尔斯",role:"Organization Builder",film:"The Intern",tag:"LEADERSHIP",initial:"J"},
-  {id:"molly",name:"Molly",cn:"茉莉",role:"Network Architect",film:"Molly's Game",tag:"NETWORK",initial:"M"},
-  {id:"katherine",name:"Katherine",cn:"凯瑟琳",role:"Quiet Expert",film:"Hidden Figures",tag:"EXPERTISE",initial:"K"}
+  {id:"miranda",name:"Miranda",cn:"米兰达",role:"权力谋略家",film:"《穿普拉达的女王》",tag:"权力",img:"miranda.png"},
+  {id:"elle",name:"Elle",cn:"艾丽",role:"自信挑战者",film:"《律政俏佳人》",tag:"自信",img:"elle.png"},
+  {id:"jules",name:"Jules",cn:"朱尔斯",role:"组织构建者",film:"《实习生》",tag:"管理",img:"jules.png"},
+  {id:"molly",name:"Molly",cn:"茉莉",role:"人脉架构师",film:"《茉莉牌局》",tag:"人脉",img:"MOLLY.png"},
+  {id:"katherine",name:"Katherine",cn:"凯瑟琳",role:"安静的专家",film:"《隐藏人物》",tag:"专业",img:"katherine.png"}
 ];
 
 let selected = characters[0];
@@ -144,21 +148,24 @@ const send = document.getElementById("send");
 function renderCharacters(){
   charBox.innerHTML = characters.map((c,i)=>`
     <button class="character ${c.id===selected.id?'active':''}" data-id="${c.id}">
-      <div class="number">0${i+1} / ${c.tag}</div>
-      <div class="avatar">${c.initial}</div>
-      <div class="name">${c.name} <span style="font-size:12px">${c.cn}</span></div>
-      <div class="role">${c.role}<br>${c.film}</div>
+      <img class="char-img" src="${c.img}" alt="${c.name} ${c.cn}" loading="lazy">
+      <div class="char-body">
+        <div class="number">0${i+1} / ${c.tag}</div>
+        <div class="name">${c.name}<span>${c.cn}</span></div>
+        <div class="role">${c.role}<br>${c.film}</div>
+      </div>
     </button>`).join("");
   document.querySelectorAll(".character").forEach(el=>{
     el.onclick=()=>{selected=characters.find(c=>c.id===el.dataset.id); history=[]; clearChat(); updateSelected(); renderCharacters();}
   });
 }
 function updateSelected(){
-  document.getElementById("selectedName").textContent=selected.name;
+  document.getElementById("selectedName").textContent=selected.name+" "+selected.cn;
   document.getElementById("selectedRole").textContent=selected.role;
+  const img=document.getElementById("selectedImg"); img.src=selected.img; img.alt=selected.name+" "+selected.cn;
 }
 function clearChat(){
-  messages.innerHTML='<div class="empty">Tell her what happened.<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>';
+  messages.innerHTML='<div class="empty">把你的困境告诉她。<br><span style="font-size:14px">她会先判断问题，再告诉你下一步。</span></div>';
 }
 function addMessage(role,text){
   const empty=messages.querySelector(".empty"); if(empty) empty.remove();
@@ -169,7 +176,7 @@ function addMessage(role,text){
 async function ask(){
   const text=input.value.trim(); if(!text || send.disabled) return;
   addMessage("user",text); history.push({role:"user",content:text});
-  input.value=""; input.style.height="auto"; send.disabled=true; send.textContent="Thinking…";
+  input.value=""; input.style.height="auto"; send.disabled=true; send.textContent="思考中…";
   try{
     const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({character:selected.id,message:text,history:history.slice(-8)})});
@@ -178,7 +185,7 @@ async function ask(){
     addMessage("assistant",data.answer); history.push({role:"assistant",content:data.answer});
   }catch(e){
     addMessage("assistant","暂时无法连接 AI。请检查 API 部署和环境变量配置。\n\n"+e.message);
-  }finally{send.disabled=false;send.textContent="Ask her";}
+  }finally{send.disabled=false;send.textContent="问她";}
 }
 send.onclick=ask;
 input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();ask()}});
