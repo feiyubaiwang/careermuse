@@ -47,7 +47,7 @@ async function checkRateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("x-build", "ba543cb-rawfetch");
+  res.setHeader("x-build", "48c6138-early");
   if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed", build: "ba543cb-rawfetch" });
   if (!process.env.DEEPSEEK_API_KEY) return res.status(500).json({ error: "Missing DEEPSEEK_API_KEY" });
 
