@@ -75,6 +75,12 @@ export default async function handler(req, res) {
     const r = await client.responses.create({ model: process.env.DEEPSEEK_MODEL || "deepseek-chat", instructions: single(c), input });
     return res.status(200).json({ answer: r.output_text || "", remaining: rl.remaining, limit: DAILY_LIMIT });
   } catch (e) {
-    return res.status(500).json({ error: "AI request failed", detail: e && e.message ? e.message : "Unknown error" });
+    return res.status(500).json({
+      error: "AI request failed",
+      detail: e && e.message ? e.message : "Unknown error",
+      status: e && e.status,
+      code: e && e.code,
+      name: e && e.constructor ? e.constructor.name : null
+    });
   }
 }
