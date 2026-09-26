@@ -9,6 +9,7 @@
     :root{
       --bg:#F0EEE9; --ink:#242320; --muted:#77736b; --line:#d8d4cc;
       --card:#f7f5f1; --dark:#292824; --white:#fffdfa;
+      --wine:#6C2B33; --wine-deep:#56202A; --wine-text:#F2E4E1; --wine-sub:#C9A9A3;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Microsoft YaHei",sans-serif}
@@ -28,24 +29,24 @@
     .characters{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
     .character{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:.2s ease;overflow:hidden;border-radius:2px;padding:0}
     .character:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(36,35,32,.14)}
-    .character.active{border-color:var(--dark)}
+    .character.active{border-color:var(--wine-deep);box-shadow:0 8px 22px rgba(108,43,51,.3)}
     .char-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;filter:grayscale(100%) contrast(1.03);transition:filter .25s ease}
     .character.active .char-img,.character:hover .char-img{filter:none}
     .char-body{padding:13px 14px 16px}
-    .character.active .char-body{background:var(--dark)}
+    .character.active .char-body{background:var(--wine)}
     .number{font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:8px}
-    .active .number{color:#aaa79f}
+    .active .number{color:var(--wine-sub)}
     .name{font-family:Georgia,serif;font-size:17px;margin-bottom:6px}
     .name span{font-size:12px;color:var(--muted);margin-left:4px}
-    .active .name{color:var(--white)}
-    .active .name span{color:#bdb9b1}
+    .active .name{color:var(--wine-text)}
+    .active .name span{color:var(--wine-sub)}
     .role{font-size:11px;color:var(--muted);line-height:1.6}
-    .active .role{color:#bdb9b1}
+    .active .role{color:var(--wine-sub)}
     .chat{margin-top:54px;border:1px solid var(--line);background:rgba(255,253,250,.55)}
     .chat-top{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
     .selected{display:flex;align-items:center;gap:12px}
     .selected-img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
-    .dot{width:8px;height:8px;border-radius:50%;background:#4c5149}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--wine-deep)}
     .selected strong{font-family:Georgia,serif;font-size:18px;font-weight:400}
     .selected span{font-size:11px;color:var(--muted);margin-left:7px}
     .messages{min-height:310px;max-height:520px;overflow:auto;padding:30px 24px}
