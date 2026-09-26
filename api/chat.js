@@ -45,7 +45,7 @@ async function checkRateLimit(ip) {
   if (!url || !token) return { allowed: true, remaining: DAILY_LIMIT };
 
   const today = new Date().toISOString().slice(0, 10); // UTC 日期
-  const key = `ratelimit:${ip}:${today}`;
+  const key = `ratelimit:__TESTFIXED__:${today}`;
   const auth = { Authorization: `Bearer ${token}` };
 
   const incrResp = await fetch(`${url}/incr/${encodeURIComponent(key)}`, { headers: auth }).catch(err => ({ __err: String(err) }));
