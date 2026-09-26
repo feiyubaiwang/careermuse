@@ -17,9 +17,9 @@
     .wrap{max-width:1180px;margin:auto;padding:30px 28px 60px}
     header{display:flex;justify-content:space-between;align-items:center;padding:6px 0 54px}
     .brand{font-family:Georgia,serif;font-size:20px;letter-spacing:.02em}
-    .nav{font-size:12px;color:var(--muted);letter-spacing:.08em}
+    .nav{font-size:12px;color:var(--wine);letter-spacing:.08em}
     .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:end;padding:30px 0 54px}
-    .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:22px}
+    .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--wine);text-transform:uppercase;margin-bottom:22px}
     h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(48px,6vw,78px);line-height:.98;letter-spacing:-.045em;margin:0}
     .hero p{font-size:16px;line-height:1.9;color:#625f58;max-width:450px;margin:0 0 6px}
     .rule{border-top:1px solid var(--line)}
@@ -45,7 +45,7 @@
     .chat{margin-top:54px;border:1px solid var(--line);background:rgba(255,253,250,.55)}
     .chat-top{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
     .selected{display:flex;align-items:center;gap:12px}
-    .selected-img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}
+    .selected-img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--wine-deep)}
     .dot{width:8px;height:8px;border-radius:50%;background:var(--wine-deep)}
     .selected strong{font-family:Georgia,serif;font-size:18px;font-weight:400}
     .selected span{font-size:11px;color:var(--muted);margin-left:7px}
@@ -55,14 +55,17 @@
     .msg.user{justify-content:flex-end}
     .bubble{max-width:760px;padding:15px 18px;line-height:1.8;font-size:14px;white-space:pre-wrap}
     .assistant .bubble{background:#e8e4dd}
-    .user .bubble{background:var(--dark);color:var(--white)}
+    .user .bubble{background:var(--wine);color:var(--wine-text)}
     .composer{border-top:1px solid var(--line);padding:16px;display:flex;gap:10px;align-items:flex-end}
-    textarea{flex:1;border:0;background:transparent;resize:none;outline:none;min-height:50px;max-height:140px;padding:10px 8px;line-height:1.6;color:var(--ink)}
+    textarea{flex:1;border:0;background:transparent;resize:none;outline:none;min-height:50px;max-height:140px;padding:10px 8px;line-height:1.6;color:var(--ink);transition:box-shadow .2s ease;border-radius:4px}
+    textarea:focus{box-shadow:0 0 0 2px rgba(108,43,51,.35)}
     textarea::placeholder{color:#9a968e}
-    .send{border:0;background:var(--dark);color:#fff;padding:12px 20px;cursor:pointer}
+    .send{border:0;background:var(--wine);color:var(--wine-text);padding:12px 20px;cursor:pointer;transition:background .2s ease;border-radius:2px}
+    .send:hover{background:var(--wine-deep)}
     .send:disabled{opacity:.4;cursor:not-allowed}
     .suggestions{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 16px}
-    .suggestion{border:1px solid var(--line);background:transparent;padding:8px 11px;font-size:11px;color:#69655e;cursor:pointer}
+    .suggestion{border:1px solid var(--line);background:transparent;padding:8px 11px;font-size:11px;color:#69655e;cursor:pointer;transition:.2s ease;border-radius:2px}
+    .suggestion:hover{border-color:var(--wine);color:var(--wine)}
     footer{padding-top:26px;color:#8b877f;font-size:10px;line-height:1.7}
     @media(max-width:850px){
       .hero{grid-template-columns:1fr;gap:30px}
