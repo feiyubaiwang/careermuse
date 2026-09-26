@@ -29,9 +29,19 @@ function getClientIp(req) {
 }
 
 // 按 IP + 当天日期计数；未配置 Upstash 时放行
+// 自动识别变量名：兼容 UPSTASH_ / STORAGE_ / KV_ 等前缀
+function getUpstashCreds() {
+  const e = process.env;
+  const pick = (...names) => { for (const n of names) if (e[n]) return e[n]; return null; };
+  let url = pick("UPSTASH_REDIS_REST_URL", "STORAGE_REDIS_REST_URL", "KV_REST_API_URL");
+  let token = pick("UPSTASH_REDIS_REST_TOKEN", "STORAGE_REDIS_REST_TOKEN", "KV_REST_API_TOKEN");
+  if (!url) { const k = Object.keys(e).find(x => /REST/i.test(x) && /URL/i.test(x)); if (k) url = e[k]; }
+  if (!token) { const k = Object.keys(e).find(x => /REST/i.test(x) && /TOKEN/i.test(x)); if (k) token = e[k]; }
+  return { url, token };
+}
+
 async function checkRateLimit(ip) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const { url, token } = getUpstashCreds();
   if (!url || !token) return { allowed: true, remaining: DAILY_LIMIT };
 
   const today = new Date().toISOString().slice(0, 10); // UTC 日期
