@@ -86,13 +86,16 @@ export default async function handler(req, res) {
       { role:"user", content: message.slice(0, 6000) }
     ];
 
-    const response = await client.responses.create({
-      model: process.env.DEEPSEEK_MODEL || "deepseek-flash",
-      instructions: systemPrompt(c),
-      input
+    const response = await client.chat.completions.create({
+      model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
+      messages: [
+        { role: "system", content: systemPrompt(c) },
+        ...input
+      ],
+      temperature: 0.7
     });
 
-    return res.status(200).json({answer: response.output_text});
+    return res.status(200).json({answer: response.choices[0].message.content});
   } catch (err) {
     console.error(err);
     return res.status(500).json({error:"AI request failed", detail: err?.message || "Unknown error"});

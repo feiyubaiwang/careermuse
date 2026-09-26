@@ -174,7 +174,7 @@ async function ask(){
     const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({character:selected.id,message:text,history:history.slice(-8)})});
     const data=await res.json();
-    if(!res.ok) throw new Error(data.error||"Request failed");
+    if(!res.ok) throw new Error((data.error||"Request failed")+(data.detail?(" · "+data.detail):""));
     addMessage("assistant",data.answer); history.push({role:"assistant",content:data.answer});
   }catch(e){
     addMessage("assistant","暂时无法连接 AI。请检查 API 部署和环境变量配置。\n\n"+e.message);
